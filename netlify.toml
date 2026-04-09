@@ -1,0 +1,66 @@
+# =============================================
+# NETLIFY CONFIG — SlideUp Agency
+# =============================================
+
+[build]
+  publish = "."        # dossier racine = dossier de publication
+
+# =============================================
+# HEADERS DE SÉCURITÉ (HTTP level — plus fort
+# que les meta tags HTML)
+# =============================================
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Anti-clickjacking
+    X-Frame-Options = "DENY"
+    # Anti-sniffing MIME
+    X-Content-Type-Options = "nosniff"
+    # Anti-XSS navigateurs anciens
+    X-XSS-Protection = "1; mode=block"
+    # Politique de référent
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Permissions navigateur
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    # HSTS — force HTTPS pour 1 an
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    # Content Security Policy
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self';"
+
+# =============================================
+# CACHE — images, vidéo, polices (1 an)
+# =============================================
+
+[[headers]]
+  for = "/assets/portfolio/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/video/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    # Active le streaming vidéo (range requests)
+    Accept-Ranges = "bytes"
+
+[[headers]]
+  for = "/assets/logo/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    # HTML : pas de cache long (toujours à jour)
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# =============================================
+# REDIRECTIONS
+# =============================================
+
+# Toute URL inconnue → page d'accueil (SPA fallback)
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
